@@ -1,15 +1,16 @@
-package co.edu.poli.examen2_Soto.controlador;
+package co.edu.poli.Parcial_2_Practica.controlador;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import co.edu.poli.examen2_Soto.modelo.Credito;
-import co.edu.poli.examen2_Soto.modelo.Debito;
-import co.edu.poli.examen2_Soto.modelo.Tarjeta;
-import co.edu.poli.examen2_Soto.modelo.Titular;
-import co.edu.poli.examen2_Soto.servicios.DAOTarjeta;
-import co.edu.poli.examen2_Soto.servicios.DAOTitular;
+import co.edu.poli.Parcial_2_Practica.modelo.Credito;
+import co.edu.poli.Parcial_2_Practica.modelo.Debito;
+import co.edu.poli.Parcial_2_Practica.modelo.EstadoTarjeta;
+import co.edu.poli.Parcial_2_Practica.modelo.Tarjeta;
+import co.edu.poli.Parcial_2_Practica.modelo.Titular;
+import co.edu.poli.Parcial_2_Practica.servicios.DAOTarjeta;
+import co.edu.poli.Parcial_2_Practica.servicios.DAOTitular;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -17,6 +18,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -39,6 +41,10 @@ public class ControlFormCard {
 	private DatePicker datepk1;
 	@FXML
 	private ComboBox<Titular> cmbTitular;
+	@FXML
+	private ComboBox<EstadoTarjeta> cmbEstado;
+	@FXML
+	private Label lblEstado;
 	@FXML
 	private RadioButton radio1; // Débito
 	@FXML
@@ -65,6 +71,9 @@ public class ControlFormCard {
 		}
 		cmbTitular.getItems().setAll(lista);
 
+		// HU-01: estados disponibles (sin valor por defecto, es obligatorio elegir uno)
+		cmbEstado.getItems().setAll(EstadoTarjeta.values());
+
 		txtTarjeta1.focusedProperty().addListener((obs, oldVal, newVal) -> {
 			if (!newVal)
 				validarSoloNumeros(txtTarjeta1);
@@ -80,13 +89,15 @@ public class ControlFormCard {
 	@FXML
 	private void pressConsulta(ActionEvent event) {
 		txtAreaResultado.setText("");
+		lblEstado.setText("");
 		if (!txtTarjeta1.getText().isBlank() || !txtTarjeta1.getText().isEmpty()) {
 			try {
 				Tarjeta t = daoTarjeta.readone(txtTarjeta1.getText());
 
-				if (t != null)
+				if (t != null) {
 					txtAreaResultado.setText(t.toString());
-				else
+					lblEstado.setText("Estado: " + t.getEstado());
+				} else
 					mostrarAlerta("No existe el numero de tarjeta");
 			} catch (Exception e) {
 				mostrarAlerta(e.getMessage());
@@ -104,12 +115,12 @@ public class ControlFormCard {
 			return;
 		}
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		String fechaExp = datepk1.getValue().format(formatter);
-		if (fechaExp == null || fechaExp.isEmpty()) {
+		if (datepk1.getValue() == null) {
 			mostrarAlerta("⚠ Seleccione la fecha de expedición.");
 			return;
 		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String fechaExp = datepk1.getValue().format(formatter);
 
 		Titular titular = cmbTitular.getValue();
 		if (titular == null) {
@@ -117,12 +128,19 @@ public class ControlFormCard {
 			return;
 		}
 
+		// HU-01: el estado es obligatorio, no se guarda una tarjeta sin estado válido
+		EstadoTarjeta estado = cmbEstado.getValue();
+		if (estado == null) {
+			mostrarAlerta("⚠ Seleccione un estado válido para la tarjeta.");
+			return;
+		}
+
 		Tarjeta nueva;
 
 		if (radio1.isSelected()) {
-			nueva = new Debito(numero, fechaExp, true, titular, 0.0);
+			nueva = new Debito(numero, fechaExp, estado, titular, 0.0);
 		} else {
-			nueva = new Credito(numero, fechaExp, true, titular, 1000000);
+			nueva = new Credito(numero, fechaExp, estado, titular, 1000000);
 		}
 
 		try {
@@ -149,6 +167,7 @@ public class ControlFormCard {
 		txtTarjeta2.clear();
 		datepk1.setValue(null);
 		cmbTitular.setValue(null);
+		cmbEstado.setValue(null);
 		radio1.setSelected(true);
 	}
 

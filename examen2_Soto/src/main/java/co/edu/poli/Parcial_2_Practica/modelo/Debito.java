@@ -1,10 +1,10 @@
-package co.edu.poli.examen2_Soto.modelo;
+package co.edu.poli.Parcial_2_Practica.modelo;
 
 public class Debito extends Tarjeta {
 
 	private double saldo;
 
-	public Debito(String numero, String fechaExp, boolean estado, Titular titular, double saldo) {
+	public Debito(String numero, String fechaExp, EstadoTarjeta estado, Titular titular, double saldo) {
 		super(numero, fechaExp, estado, titular);
 		this.saldo = saldo;
 	}

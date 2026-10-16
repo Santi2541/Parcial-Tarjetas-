@@ -1,9 +1,9 @@
-package co.edu.poli.examen2_Soto.tests.integracion;
+package co.edu.poli.Parcial_2_Practica.tests.integracion;
 
 import org.junit.jupiter.api.Test;
 
-import co.edu.poli.examen2_Soto.modelo.Titular;
-import co.edu.poli.examen2_Soto.servicios.DAOTitular;
+import co.edu.poli.Parcial_2_Practica.modelo.Titular;
+import co.edu.poli.Parcial_2_Practica.servicios.DAOTitular;
 
 import static org.junit.jupiter.api.Assertions.*;
 

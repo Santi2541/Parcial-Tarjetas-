@@ -1,10 +1,10 @@
-package co.edu.poli.examen2_Soto.modelo;
+package co.edu.poli.Parcial_2_Practica.modelo;
 
 public class Credito extends Tarjeta {
 
 	private double limite;
 
-	public Credito(String numero, String fechaExp, boolean estado, Titular titular, double limite) {
+	public Credito(String numero, String fechaExp, EstadoTarjeta estado, Titular titular, double limite) {
 		super(numero, fechaExp, estado, titular);
 		this.limite = limite;
 	}

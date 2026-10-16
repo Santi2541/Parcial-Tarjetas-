@@ -26,6 +26,13 @@ CREATE DATABASE IF NOT EXISTS examen2_soto
 
 USE examen2_soto;
 
+-- HU-01: se recrean las tablas para que el script sirva tanto en una BD nueva
+-- como en una que ya existía con el estado anterior (TINYINT). Orden inverso de FKs.
+DROP TABLE IF EXISTS tarjeta_credito;
+DROP TABLE IF EXISTS tarjeta_debito;
+DROP TABLE IF EXISTS tarjeta;
+DROP TABLE IF EXISTS titular;
+
 -- ================================================================
 -- TABLA 1 — titular
 -- Clase: Titular
@@ -56,12 +63,13 @@ CREATE TABLE IF NOT EXISTS tarjeta (
     -- @Id @Column(name = "numero")
     numero      VARCHAR(20)  NOT NULL  COMMENT '@Id — PK compartida con subclases',
 
-    -- @Column(name = "fecha_exp")
-    fecha_exp   VARCHAR(7)   NOT NULL  COMMENT '@Column heredado — formato MM/AAAA',
+    -- @Column(name = "fecha_exp")  (dd/MM/yyyy, 10 caracteres)
+    fecha_exp   VARCHAR(10)  NOT NULL  COMMENT '@Column heredado — formato dd/MM/yyyy',
 
-    -- @Column(name = "estado")  true=activa | false=bloqueada
-    estado      TINYINT(1)   NOT NULL
-                    DEFAULT 1          COMMENT '@Column heredado — 1 activa / 0 bloqueada',
+    -- @Column(name = "estado")  HU-01: ACTIVA | BLOQUEADA | CANCELADA
+    -- Obligatorio: sin DEFAULT, no se puede guardar una tarjeta sin estado válido
+    estado      ENUM('ACTIVA','BLOQUEADA','CANCELADA') NOT NULL
+                                       COMMENT '@Enumerated(STRING) — HU-01 estado de la tarjeta',
 
     -- @ManyToOne  @JoinColumn(name = "titular_id")
     -- Cardinalidad: N tarjetas → 1 titular  (diagrama: * → 1)
@@ -146,10 +154,10 @@ INSERT INTO titular (id, nombre) VALUES
     ('T002', 'María López');
 
 INSERT INTO tarjeta (numero, fecha_exp, estado, titular_id) VALUES
-    ('4111111111111111', '12/2027', 1, 'T001'),
-    ('5500005555555559', '06/2026', 1, 'T001'),
-    ('4000056655665556', '09/2025', 0, 'T002'),
-    ('5105105105105100', '03/2027', 1, 'T002');
+    ('4111111111111111', '12/2027', 'ACTIVA',    'T001'),
+    ('5500005555555559', '06/2026', 'ACTIVA',    'T001'),
+    ('4000056655665556', '09/2025', 'BLOQUEADA', 'T002'),
+    ('5105105105105100', '03/2027', 'CANCELADA', 'T002');
 
 INSERT INTO tarjeta_debito (numero, saldo) VALUES
     ('4111111111111111', 1500000.00),

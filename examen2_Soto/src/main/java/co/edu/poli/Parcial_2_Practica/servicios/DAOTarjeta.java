@@ -1,9 +1,10 @@
-package co.edu.poli.examen2_Soto.servicios;
+package co.edu.poli.Parcial_2_Practica.servicios;
 
-import co.edu.poli.examen2_Soto.modelo.Credito;
-import co.edu.poli.examen2_Soto.modelo.Debito;
-import co.edu.poli.examen2_Soto.modelo.Tarjeta;
-import co.edu.poli.examen2_Soto.modelo.Titular;
+import co.edu.poli.Parcial_2_Practica.modelo.Credito;
+import co.edu.poli.Parcial_2_Practica.modelo.Debito;
+import co.edu.poli.Parcial_2_Practica.modelo.EstadoTarjeta;
+import co.edu.poli.Parcial_2_Practica.modelo.Tarjeta;
+import co.edu.poli.Parcial_2_Practica.modelo.Titular;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,7 +26,7 @@ public class DAOTarjeta implements CRUD<Tarjeta> {
 		PreparedStatement ps = con.prepareStatement(SQL_INSERT_TARJETA);
 		ps.setString(1, t.getNumero());
 		ps.setString(2, t.getFechaExp());
-		ps.setBoolean(3, t.isEstado());
+		ps.setString(3, t.getEstado().name());
 		ps.setString(4, t.getTitular().getId());
 		ps.executeUpdate();
 
@@ -39,7 +40,7 @@ public class DAOTarjeta implements CRUD<Tarjeta> {
 			ps.setDouble(2, ((Debito) t).getSaldo());
 		else
 			ps.setDouble(2, ((Credito) t).getLimite());
-		
+
 		try {
 			ps.executeUpdate();
 			con.commit();
@@ -66,7 +67,7 @@ public class DAOTarjeta implements CRUD<Tarjeta> {
 		ps.setString(1, (String) num);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
-			return new Debito(rs.getString("numero"), rs.getString("fecha_exp"), rs.getBoolean("estado"),
+			return new Debito(rs.getString("numero"), rs.getString("fecha_exp"), EstadoTarjeta.desdeBD(rs.getString("estado")),
 					new Titular(rs.getString("titular_id"), rs.getString("titular_nombre")), rs.getDouble("saldo"));
 		}
 
@@ -79,7 +80,7 @@ public class DAOTarjeta implements CRUD<Tarjeta> {
 		ps.setString(1, (String) num);
 		rs = ps.executeQuery();
 		if (rs.next()) {
-			return new Credito(rs.getString("numero"), rs.getString("fecha_exp"), rs.getBoolean("estado"),
+			return new Credito(rs.getString("numero"), rs.getString("fecha_exp"), EstadoTarjeta.desdeBD(rs.getString("estado")),
 					new Titular(rs.getString("titular_id"), rs.getString("titular_nombre")), rs.getDouble("limite"));
 		}
 

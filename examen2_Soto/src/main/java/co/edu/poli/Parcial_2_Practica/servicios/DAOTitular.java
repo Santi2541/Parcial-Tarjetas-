@@ -1,4 +1,4 @@
-package co.edu.poli.examen2_Soto.servicios;
+package co.edu.poli.Parcial_2_Practica.servicios;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.edu.poli.examen2_Soto.modelo.Titular;
+import co.edu.poli.Parcial_2_Practica.modelo.Titular;
 
 public class DAOTitular implements CRUD<Titular> {
 

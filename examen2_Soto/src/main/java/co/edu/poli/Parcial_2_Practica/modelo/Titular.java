@@ -1,4 +1,4 @@
-package co.edu.poli.examen2_Soto.modelo;
+package co.edu.poli.Parcial_2_Practica.modelo;
 
 public class Titular {
 

@@ -1,4 +1,4 @@
-package co.edu.poli.examen2_Soto.vista;
+package co.edu.poli.Parcial_2_Practica.vista;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		TabPane root = (TabPane) FXMLLoader.load(getClass().getResource("/co/edu/poli/examen2_Soto/formCard.fxml"));
+		TabPane root = (TabPane) FXMLLoader.load(getClass().getResource("/co/edu/poli/Parcial_2_Practica/formCard.fxml"));
 		scene = new Scene(root);
 		stage.setTitle("Tarjetas");
 		stage.setResizable(false);

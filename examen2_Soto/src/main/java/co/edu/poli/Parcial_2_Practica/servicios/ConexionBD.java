@@ -1,4 +1,4 @@
-package co.edu.poli.examen2_Soto.servicios;
+package co.edu.poli.Parcial_2_Practica.servicios;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
